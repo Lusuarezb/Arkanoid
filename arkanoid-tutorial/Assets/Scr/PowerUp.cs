@@ -14,8 +14,6 @@ public class PowerUp : MonoBehaviour
     private List<string> _types = new List<string>{"Small", "Large", "Fast", "Slow", "Multiball"};
     int _Rand;
 
-    // Elementos
-
     public void Initialize()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -78,6 +76,7 @@ public class PowerUp : MonoBehaviour
     {
         string type = _types[_Rand];
 
+        // Si el tipo es Small, disminuyo el tamaño del paddle si es mayor o igual a cierto tamaño minimo
         if (type == "Small"){
             GameObject paddle = GameObject.Find("Paddle");
             Vector3 size = paddle.transform.localScale;
@@ -87,7 +86,7 @@ public class PowerUp : MonoBehaviour
             }
         }
         
-        // Si el tipo es Large
+        // Si el tipo es Large, aumento el tamaño del paddle si es menor o igual a cierto tamaño maximo
         if (type == "Large"){
             GameObject paddle = GameObject.Find("Paddle");
             Vector3 size = paddle.transform.localScale;
@@ -97,31 +96,40 @@ public class PowerUp : MonoBehaviour
             }
         }
 
-        // Si el tipo es Fast
+        // Si el tipo es Fast, para cada ball en la lista de balls aumento su velocidad si aun no es la maxima
         if (type == "Fast"){
-            GameObject ball = GameObject.Find("Ball(Clone)");
-            Ball script = ball.GetComponent<Ball>();
+            //GameObject ball = GameObject.Find("Ball(Clone)");
+            //Ball script = ball.GetComponent<Ball>();
 
-            Vector2 velocity = script.GetCurrentSpeed();
-            if(velocity.magnitude <= script.GetMaxSpeed()){
-                velocity = velocity * 1.2f;
-                script.SetVelocity(velocity);
+            GameObject arkanoidController = GameObject.Find("ArkanoidController");
+            ArkanoidController controllerScript = arkanoidController.GetComponent<ArkanoidController>();
+
+            for (int i = controllerScript._balls.Count -1; i >= 0; i--){
+                Ball ball = controllerScript._balls[i];
+                Vector2 velocity = ball.GetCurrentSpeed();
+                if(velocity.magnitude <= ball.GetMaxSpeed()){
+                    velocity = velocity * 1.8f;
+                    ball.SetVelocity(velocity);
+                }
             }
         }
 
-        // Si el tipo es Slow
+        // Si el tipo es Slow, para cada ball en la lista de balls disminyo su velocidad si aun no es la minima
         if (type == "Slow"){
-            GameObject ball = GameObject.Find("Ball(Clone)");
-            Ball script = ball.GetComponent<Ball>();
+            GameObject arkanoidController = GameObject.Find("ArkanoidController");
+            ArkanoidController controllerScript = arkanoidController.GetComponent<ArkanoidController>();
 
-            Vector2 velocity = script.GetCurrentSpeed();
-            if(velocity.magnitude >= script.GetMinSpeed()){
-                velocity = velocity * 0.8f;
-                script.SetVelocity(velocity);
+            for (int i = controllerScript._balls.Count -1; i >= 0; i--){
+                Ball ball = controllerScript._balls[i];
+                Vector2 velocity = ball.GetCurrentSpeed();
+                if(velocity.magnitude >= ball.GetMinSpeed()){
+                    velocity = velocity * 0.8f;
+                    ball.SetVelocity(velocity);
+                }
             }
         }
 
-        // Si el tipo es Multiball
+        // Si el tipo es Multiball, reviso cuantas bolas hay en la lista de balls, y creo las necesarias para que hayan máximo 3 al mismo tiempo
         if (type == "Multiball"){
             GameObject arkanoidController = GameObject.Find("ArkanoidController");
             GameObject ball = GameObject.Find("Ball(Clone)");
