@@ -1,2 +1,2 @@
-# unal-intro-games-arkanoid
-Entrega del Proyecto 2D
+# Arkanoid
+Desarrollo de Arkanoid, el popular videojuego de los 80 utilizando Unity
